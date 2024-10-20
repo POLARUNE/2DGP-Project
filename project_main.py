@@ -7,7 +7,7 @@ class Bg:
         self.image = load_image('bg1.png')
 
     def draw(self):
-        self.image.draw(400, 300)
+        self.image.draw_to_origin(0, 0, canvas_w, canvas_h)
 
     def update(self):
         pass
@@ -17,13 +17,13 @@ class Cube:
     def __init__(self):
         self.image = load_image('cube.png')
         self.x = 100
-        self.y = 50
+        self.y = 25
         self.dx = 0  # 좌우 이동 속도
         self.dy = 0  # 점프 속도 (y축)
         self.is_jumping = False  # 점프 상태
         self.gravity = -0.5  # 중력
         self.jump_power = 10  # 점프할 때의 초기 속도
-        self.ground_level = 50  # 바닥 y 좌표
+        self.ground_level = 25  # 바닥 y 좌표
         self.left_pressed = False  # 왼쪽 키가 눌렸는지
         self.right_pressed = False  # 오른쪽 키가 눌렸는지
         self.space_pressed = False  # 스페이스 키가 눌렸는지
@@ -120,8 +120,8 @@ def render_world():
         o.draw()
     update_canvas()
 
-canvas_w = 800
-canvas_h = 600
+canvas_w = 1200
+canvas_h = 800
 open_canvas(canvas_w, canvas_h)
 reset_world()
 
