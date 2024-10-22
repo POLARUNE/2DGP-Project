@@ -20,6 +20,7 @@ class Cube:
         self.y = 25
         self.dx = 0  # 좌우 이동 속도
         self.dy = 0  # 점프 속도 (y축)
+        self.scale = 50 # 큐브 가로 및 세로 크기
         self.is_jumping = False  # 점프 상태
         self.gravity = -0.5  # 중력
         self.jump_power = 10  # 점프할 때의 초기 속도
@@ -42,10 +43,10 @@ class Cube:
 
         # 좌우 경계 체크 (큐브가 화면 밖으로 나가지 않도록)
         self.x += self.dx
-        if self.x < 25:
-            self.x = 25  # 왼쪽 경계
-        elif self.x > canvas_w - 25:
-            self.x = canvas_w - 25  # 오른쪽 경계
+        if self.x < self.scale // 2:
+            self.x = self.scale // 2  # 왼쪽 경계
+        elif self.x > canvas_w - self.scale // 2:
+            self.x = canvas_w - self.scale // 2  # 오른쪽 경계
 
         # 점프 중일 때 중력 처리
         if self.is_jumping:
