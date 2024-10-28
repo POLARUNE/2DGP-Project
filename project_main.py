@@ -1,6 +1,7 @@
 from pico2d import *
 
 from Bg import Bg
+from Block import Block
 from Cube import Cube
 from Spike import Spike
 from settings import canvas_w, canvas_h
@@ -51,6 +52,9 @@ def reset_world():
         Spike(450, 25, direction="down"),
         Spike(600, 25, direction="right")]
     world += spikes
+
+    blocks = [Block(500, 400)]
+    world += blocks
 
 
 def update_world():
