@@ -12,6 +12,17 @@ class Bg:
     def update(self):
         pass
 
+class Spike:
+    def __init__(self, x, y):  # x, y 좌표를 매개변수로 받아 초기화
+        self.image = load_image('spike1.png')
+        self.x = x
+        self.y = y
+
+    def draw(self):
+        self.image.clip_draw(0,150,100,100,self.x, self.y,50,50)
+
+    def update(self):
+        pass
 
 class Cube:
     def __init__(self):
@@ -98,6 +109,7 @@ def reset_world():
     global running
     global bg
     global cube
+    global spikes
     global world
 
     running = True
@@ -108,6 +120,9 @@ def reset_world():
 
     cube = Cube()
     world.append(cube)
+
+    spikes = [Spike(300, 25), Spike(450, 25), Spike(600, 25)]
+    world += spikes
 
 
 def update_world():
