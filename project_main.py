@@ -37,6 +37,7 @@ def reset_world():
     global bg
     global cube
     global spikes
+    global blocks
     global world
 
     running = True
@@ -53,7 +54,7 @@ def reset_world():
         Spike(600, 25, direction="right")]
     world += spikes
 
-    blocks = [Block(500, 400)]
+    blocks = [Block(150, 50), Block(300, 120), Block(500,  180), Block(700, 240), Block(900, 300)]
     world += blocks
 
 
