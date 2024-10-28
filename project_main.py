@@ -1,112 +1,9 @@
 from pico2d import *
-import random
 
-
-class Bg:
-    def __init__(self):
-        self.image = load_image('bg1.png')
-
-    def draw(self):
-        self.image.draw_to_origin(0, 0, canvas_w, canvas_h)
-
-    def update(self):
-        pass
-
-class Spike:
-    def __init__(self, x, y):  # x, y 좌표를 매개변수로 받아 초기화
-        self.image = load_image('spike1.png')
-        self.x = x
-        self.y = y
-        self.size = 50
-
-    def draw(self):
-        self.image.draw(self.x,self.y,self.size,self.size)
-
-    def update(self):
-        pass
-
-# 삼각형 충돌 체크 함수
-    def is_colliding_with_cube(self, cube):
-        # 삼각형 꼭짓점 좌표
-        p1 = (self.x - self.size / 2, self.y)  # 왼쪽 아래
-        p2 = (self.x + self.size / 2, self.y)  # 오른쪽 아래
-        p3 = (self.x, self.y + self.size)     # 위쪽 정점
-
-        # 큐브의 중앙 좌표
-        cx, cy = cube.x, cube.y
-
-        # 삼각형 내부 충돌 체크 함수
-        def point_in_triangle(px, py, p1, p2, p3):
-            # 벡터를 이용한 면적 비교
-            def sign(p1, p2, p3):
-                return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
-
-            d1 = sign((px, py), p1, p2)
-            d2 = sign((px, py), p2, p3)
-            d3 = sign((px, py), p3, p1)
-
-            # 삼각형 내부에 점이 있는지 체크
-            has_neg = (d1 < 0) or (d2 < 0) or (d3 < 0)
-            has_pos = (d1 > 0) or (d2 > 0) or (d3 > 0)
-            return not (has_neg and has_pos)
-
-        # 충돌 체크 결과 반환
-        return point_in_triangle(cx, cy, p1, p2, p3)
-
-class Cube:
-    def __init__(self):
-        self.image = load_image('cube.png')
-        self.x = 100
-        self.y = 25
-        self.dx = 0  # 좌우 이동 속도
-        self.dy = 0  # 점프 속도 (y축)
-        self.scale = 50 # 큐브 가로 및 세로 크기
-        self.is_jumping = False  # 점프 상태
-        self.gravity = -0.5  # 중력
-        self.jump_power = 10  # 점프할 때의 초기 속도
-        self.ground_level = 25  # 바닥 y 좌표
-        self.left_pressed = False  # 왼쪽 키가 눌렸는지
-        self.right_pressed = False  # 오른쪽 키가 눌렸는지
-        self.space_pressed = False  # 스페이스 키가 눌렸는지
-
-    def draw(self):
-        self.image.draw(self.x, self.y)
-
-    def update(self):
-        # 좌우 이동 처리
-        if self.left_pressed:
-            self.dx = -5  # 왼쪽으로 이동
-        elif self.right_pressed:
-            self.dx = 5  # 오른쪽으로 이동
-        else:
-            self.dx = 0  # 양쪽 키를 모두 떼면 멈춤
-
-        # 좌우 경계 체크 (큐브가 화면 밖으로 나가지 않도록)
-        self.x += self.dx
-        if self.x < self.scale // 2:
-            self.x = self.scale // 2  # 왼쪽 경계
-        elif self.x > canvas_w - self.scale // 2:
-            self.x = canvas_w - self.scale // 2  # 오른쪽 경계
-
-        # 점프 중일 때 중력 처리
-        if self.is_jumping:
-            self.dy += self.gravity  # 중력 작용
-            self.y += self.dy  # y 좌표 업데이트
-
-            # 바닥에 도착하면 점프 종료
-            if self.y <= self.ground_level:
-                self.y = self.ground_level
-                self.is_jumping = False
-                self.dy = 0  # 점프 속도를 초기화
-
-        # 스페이스 키가 계속 눌려있으면 점프 상태를 계속 유지
-        if self.space_pressed and not self.is_jumping:
-            self.jump()
-
-    def jump(self):
-        if not self.is_jumping:  # 점프 중이 아닐 때만 점프 가능
-            self.is_jumping = True
-            self.dy = self.jump_power  # 점프할 때의 초기 속도를 설정
+from Bg import Bg
+from Cube import Cube
+from Spike import Spike
+from settings import canvas_w, canvas_h
 
 
 def handle_events():
@@ -150,13 +47,18 @@ def reset_world():
     cube = Cube()
     world.append(cube)
 
-    spikes = [Spike(300, 25), Spike(450, 25), Spike(600, 25)]
+    spikes = [ Spike(300, 25, direction="up"),
+        Spike(450, 25, direction="down"),
+        Spike(600, 25, direction="right")]
     world += spikes
 
 
 def update_world():
     for o in world:
-        o.update()
+        if isinstance(o, Cube):
+            o.update(spikes)  # Cube update에 spikes 전달
+        else:
+            o.update()
 
 
 def render_world():
@@ -165,8 +67,7 @@ def render_world():
         o.draw()
     update_canvas()
 
-canvas_w = 1200
-canvas_h = 800
+
 open_canvas(canvas_w, canvas_h)
 reset_world()
 
