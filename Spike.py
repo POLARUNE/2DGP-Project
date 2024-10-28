@@ -28,17 +28,17 @@ class Spike:
             p2 = (self.x + self.size / 2, self.y)             # 오른쪽 아래
             p3 = (self.x, self.y + self.size)                 # 위쪽 정점
         elif self.direction == "down":
-            p1 = (self.x - self.size / 2, self.y + self.size) # 왼쪽 위
-            p2 = (self.x + self.size / 2, self.y + self.size) # 오른쪽 위
+            p1 = (self.x - self.size / 2, self.y + self.size / 2) # 왼쪽 위
+            p2 = (self.x + self.size / 2, self.y + self.size / 2) # 오른쪽 위
             p3 = (self.x, self.y - self.size / 2)             # 아래쪽 정점
         elif self.direction == "left":
-            p1 = (self.x, self.y - self.size / 2)             # 아래쪽 가운데
-            p2 = (self.x, self.y + self.size / 2)             # 위쪽 가운데
-            p3 = (self.x + self.size, self.y)                 # 오른쪽 정점
+            p1 = (self.x - self.size / 2, self.y - self.size / 2)   # 아래쪽
+            p2 = (self.x - self.size / 2, self.y + self.size / 2)   # 위쪽
+            p3 = (self.x + self.size, self.y)                 # 왼쪽 정점
         elif self.direction == "right":
-            p1 = (self.x, self.y - self.size / 2)             # 아래쪽 가운데
-            p2 = (self.x, self.y + self.size / 2)             # 위쪽 가운데
-            p3 = (self.x - self.size, self.y)                 # 왼쪽 정점
+            p1 = (self.x + self.size / 2, self.y - self.size / 2)             # 아래쪽
+            p2 = (self.x + self.size / 2, self.y + self.size / 2)             # 위쪽
+            p3 = (self.x - self.size, self.y)                 # 오른쪽 정점
 
         # 큐브의 중앙 좌표
         cx, cy = cube.x, cube.y
