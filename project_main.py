@@ -1,86 +1,64 @@
 from pico2d import *
 
-from Bg import Bg
-from Block import Block
-from Cube import Cube
-from Spike import Spike
+import game_world
+from bg import Bg
+from block import Block
+from cube import Cube
 from settings import canvas_w, canvas_h
+from spike import Spike
 
 
 def handle_events():
     global running
-    global cube
+
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_ESCAPE:
-                running = False
-            elif event.key == SDLK_LEFT:
-                cube.left_pressed = True  # 왼쪽 키가 눌림
-            elif event.key == SDLK_RIGHT:
-                cube.right_pressed = True  # 오른쪽 키가 눌림
-            elif event.key == SDLK_SPACE:
-                cube.space_pressed = True  # 스페이스바 눌림
-        elif event.type == SDL_KEYUP:
-            if event.key == SDLK_LEFT:
-                cube.left_pressed = False  # 왼쪽 키가 떼어짐
-            elif event.key == SDLK_RIGHT:
-                cube.right_pressed = False  # 오른쪽 키가 떼어짐
-            elif event.key == SDLK_SPACE:
-                cube.space_pressed = False  # 스페이스바가 떼어짐
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+        else:
+            cube.handle_event(event)
 
 
 def reset_world():
     global running
-    global bg
     global cube
-    global spikes
-    global blocks
-    global world
+    global bg
+    global block
 
     running = True
-    world = []
 
     bg = Bg()
-    world.append(bg)
+    # game_world.add_object(bg, 0)
 
     cube = Cube()
-    world.append(cube)
+    game_world.add_object(cube, 1)
 
-    spikes = [ Spike(300, 25, direction="up"),
-        Spike(450, 25, direction="down"),
-        Spike(600, 25, direction="right")]
-    world += spikes
+    block = Block(200,200)
+    game_world.add_object(block, 1)
 
-    blocks = [Block(150, 50), Block(300, 120), Block(500,  180), Block(700, 240), Block(900, 300)]
-    world += blocks
+    spike = Spike(200,249,"up")
+    game_world.add_object(spike, 1)
 
 
 def update_world():
-    for o in world:
-        if isinstance(o, Cube):
-            o.update(spikes)  # Cube update에 spikes 전달
-        else:
-            o.update()
+    game_world.update()
 
 
 def render_world():
     clear_canvas()
-    for o in world:
-        o.draw()
+    game_world.render()
     update_canvas()
 
 
 open_canvas(canvas_w, canvas_h)
 reset_world()
-
 # game loop
 while running:
     handle_events()
     update_world()
     render_world()
     delay(0.01)
-
+# finalization code
 close_canvas()

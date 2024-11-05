@@ -1,74 +1,100 @@
 from pico2d import load_image
 
+import game_world
 from settings import canvas_w
+from state_machine import *
+
+
+class Idle:
+    @staticmethod
+    def enter(cube, e):
+        if start_event(e):
+            cube.dir = 1
+        elif right_down(e) or left_up(e):
+            cube.dir = -1
+        elif left_down(e) or right_up(e):
+            cube.dir = 1
+
+    @staticmethod
+    def exit(cube, e):
+        if space_down(e) and cube.is_jumping == False:
+            cube.jump()
+        else:
+            pass
+
+    @staticmethod
+    def do(cube):
+        pass
+
+    @staticmethod
+    def draw(cube):
+        cube.image.draw(cube.x, cube.y)
+
+
+class Run:
+    @staticmethod
+    def enter(cube, e):
+        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
+            cube.dir = 1
+        elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
+            cube.dir = -1
+
+    @staticmethod
+    def exit(cube, e):
+        if space_down(e):
+            cube.jump()
+
+    @staticmethod
+    def do(cube):
+        cube.x += cube.dir * 7
+        if cube.x > canvas_w + 50:
+            cube.x = 0
+        elif cube.x < -50:
+            cube.x = canvas_w
+
+    @staticmethod
+    def draw(cube):
+        cube.image.draw(cube.x, cube.y)
 
 
 class Cube:
     def __init__(self):
+        self.x, self.y = 100, 25
+        self.dir = 1 # 큐브 방향
         self.image = load_image('cube.png')
-        self.initial_x = 100  # 초기 위치 x
-        self.initial_y = 25  # 초기 위치 y
-        self.x = self.initial_x
-        self.y = self.initial_y
-        self.dx = 0  # 좌우 이동 속도
-        self.dy = 0  # 점프 속도 (y축)
-        self.scale = 50 # 큐브 가로 및 세로 크기
-        self.is_jumping = False  # 점프 상태
-        self.gravity = -0.5  # 중력
-        self.jump_power = 10  # 점프할 때의 초기 속도
-        self.ground_level = 25  # 바닥 y 좌표
-        self.left_pressed = False  # 왼쪽 키가 눌렸는지
-        self.right_pressed = False  # 오른쪽 키가 눌렸는지
-        self.space_pressed = False  # 스페이스 키가 눌렸는지
+        self.is_jumping = False
+        self.jump_power = 15  # 점프 속도
+        self.gravity = 1  # 중력
+        self.jump_height = 50  # 최대 점프 높이
+        self.start_y = self.y  # 점프 시작 위치
+        self.state_machine = StateMachine(self)
+        self.state_machine.start(Idle)
+        self.state_machine.set_transitions(
+            {
+                Idle: {space_down: Idle, right_down: Run, left_down: Run, right_up: Run, left_up: Run},
+                Run: {space_down: Run, right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle}
+            }
+        )
+
+    def update(self):
+        self.state_machine.update()
+        # 점프 중일 때의 동작 처리
+        if self.is_jumping:
+            self.y += self.jump_power
+            self.jump_power -= self.gravity  # 중력 적용
+            if self.y <= self.start_y:  # 지면에 도달했을 때
+                self.y = self.start_y
+                self.is_jumping = False
+                self.jump_power = 15  # 점프 속도 초기화
+
+    def handle_event(self, event):
+        self.state_machine.add_event(('INPUT', event))
 
     def draw(self):
-        self.image.draw(self.x, self.y)
-
-    def update(self, spikes):
-        # 좌우 이동 처리
-        if self.left_pressed:
-            self.dx = -5  # 왼쪽으로 이동
-        elif self.right_pressed:
-            self.dx = 5  # 오른쪽으로 이동
-        else:
-            self.dx = 0  # 양쪽 키를 모두 떼면 멈춤
-
-        # 좌우 경계 체크 (큐브가 화면 밖으로 나가지 않도록)
-        self.x += self.dx
-        if self.x < self.scale // 2:
-            self.x = self.scale // 2  # 왼쪽 경계
-        elif self.x > canvas_w - self.scale // 2:
-            self.x = canvas_w - self.scale // 2  # 오른쪽 경계
-
-        # 점프 중일 때 중력 처리
-        if self.is_jumping:
-            self.dy += self.gravity  # 중력 작용
-            self.y += self.dy  # y 좌표 업데이트
-
-            # 바닥에 도착하면 점프 종료
-            if self.y <= self.ground_level:
-                self.y = self.ground_level
-                self.is_jumping = False
-                self.dy = 0  # 점프 속도를 초기화
-
-        # 스페이스 키가 계속 눌려있으면 점프 상태를 계속 유지
-        if self.space_pressed and not self.is_jumping:
-            self.jump()
-
-        # 가시 충돌 체크
-        for spike in spikes:
-            if spike.is_colliding_with_cube(self):
-                self.reset_position()  # 충돌 시 큐브를 초기 위치로 리셋
+        self.state_machine.draw()
 
     def jump(self):
-        if not self.is_jumping:  # 점프 중이 아닐 때만 점프 가능
+        if not self.is_jumping:  # 점프 중이 아닐 때만 실행
             self.is_jumping = True
-            self.dy = self.jump_power  # 점프할 때의 초기 속도를 설정
+            print('JUMP')
 
-    def reset_position(self):
-        # 초기 위치로 돌아가기
-        self.x = self.initial_x
-        self.y = self.initial_y
-        self.dx = 0
-        self.dy = 0
-        self.is_jumping = False
