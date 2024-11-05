@@ -15,12 +15,11 @@ class Idle:
         elif left_down(e) or right_up(e):
             cube.dir = 1
 
+
     @staticmethod
     def exit(cube, e):
-        if space_down(e) and cube.is_jumping == False:
+        if space_down(e):
             cube.jump()
-        else:
-            pass
 
     @staticmethod
     def do(cube):
@@ -46,7 +45,7 @@ class Run:
 
     @staticmethod
     def do(cube):
-        cube.x += cube.dir * 8
+        cube.x += cube.dir * 7.5
         if cube.x > canvas_w + 50:
             cube.x = 0
         elif cube.x < -50:
