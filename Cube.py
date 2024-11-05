@@ -46,7 +46,7 @@ class Run:
 
     @staticmethod
     def do(cube):
-        cube.x += cube.dir * 7
+        cube.x += cube.dir * 8
         if cube.x > canvas_w + 50:
             cube.x = 0
         elif cube.x < -50:
@@ -63,9 +63,9 @@ class Cube:
         self.dir = 1 # 큐브 방향
         self.image = load_image('cube.png')
         self.is_jumping = False
-        self.jump_power = 15  # 점프 속도
+        self.jump_power = 14  # 점프 속도
         self.gravity = 1  # 중력
-        self.jump_height = 50  # 최대 점프 높이
+        # self.jump_height = 50  # 최대 점프 높이
         self.start_y = self.y  # 점프 시작 위치
         self.state_machine = StateMachine(self)
         self.state_machine.start(Idle)
@@ -85,7 +85,7 @@ class Cube:
             if self.y <= self.start_y:  # 지면에 도달했을 때
                 self.y = self.start_y
                 self.is_jumping = False
-                self.jump_power = 15  # 점프 속도 초기화
+                self.jump_power = 14  # 점프 속도 초기화
 
     def handle_event(self, event):
         self.state_machine.add_event(('INPUT', event))
@@ -97,4 +97,3 @@ class Cube:
         if not self.is_jumping:  # 점프 중이 아닐 때만 실행
             self.is_jumping = True
             print('JUMP')
-
