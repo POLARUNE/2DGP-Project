@@ -4,7 +4,7 @@ import game_framework
 import game_world
 from bg import Bg
 from block import Block
-from cube import Cube
+from Cube import Cube
 from jump_pad import Yellow_Jump_Pad, Pink_Jump_Pad, Red_Jump_Pad, Blue_Jump_Pad
 from jump_ring import Yellow_Jump_Ring, Pink_Jump_Ring, Red_Jump_Ring, Blue_Jump_Ring
 from spike import Spike
