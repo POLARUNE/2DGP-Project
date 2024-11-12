@@ -27,7 +27,7 @@ def init():
     running = True
 
     bg = Bg()
-    # game_world.add_object(bg, 0)
+    game_world.add_object(bg, 0)
 
     cube = Cube()
     game_world.add_object(cube, 2)
@@ -65,7 +65,7 @@ def init():
 
 def update():
     game_world.update()
-
+    # delay(0.1)
 
 def draw():
     clear_canvas()

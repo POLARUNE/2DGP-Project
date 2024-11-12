@@ -46,6 +46,7 @@ def run(start_mode):
     running = True
     stack = [start_mode]
     start_mode.init()
+
     clock = pygame.time.Clock()
     FPS = 60
 
