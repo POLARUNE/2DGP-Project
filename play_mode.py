@@ -27,7 +27,7 @@ def init():
     running = True
 
     bg = Bg()
-    game_world.add_object(bg, 0)
+    # game_world.add_object(bg, 0)
 
     cube = Cube()
     game_world.add_object(cube, 2)
@@ -61,6 +61,12 @@ def init():
 
     blue_jump_pad = Blue_Jump_Pad(1025,5)
     game_world.add_object(blue_jump_pad, 1)
+
+
+    # 충돌 정보를 등록
+    game_world.add_collision_pair('cube:block', cube, None)
+    game_world.add_collision_pair('cube:block', None, cube)
+
 
 
 def update():
