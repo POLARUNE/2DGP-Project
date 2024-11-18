@@ -41,7 +41,6 @@ def remove_object(o):
             remove_collision_object(o)  # collision pairs 에서 o를 삭제
             del o  # 메모리에서 객체 자체를 삭제
             return
-
     print(f'CRITICAL: 존재하지 않는 객체{o}를 지우려고 합니다')
 
 def clear():
@@ -66,7 +65,7 @@ def handle_collisions():
         for a in pairs[0]: # A 리스트에서 하나 뽑고,
             for b in pairs[1]: # B 리스트에서 하나 뽑고,
                 if collide(a, b):
-                    print(f'{group} collide')
+                    # print(f'{group} collide')
                     a.handle_collision(group, b)
                     b.handle_collision(group, a)
     return None

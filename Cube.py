@@ -15,6 +15,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 # 점프 가속도와 높이 조절 // 가속 운동일 때는 오일러 공식 // v = at
 INIT_JUMP_POWER = 800
 GRAVITY = 3000
+GROUND = 0 # 땅 Y 좌표
 
 class Idle:
     @staticmethod
@@ -61,6 +62,9 @@ class Run:
             cube.x = 0
         elif cube.x < -50:
             cube.x = canvas_w
+        if cube.start_jump_y > GROUND + 25:
+            cube.start_jump_y = GROUND
+            cube.jump_power -= GRAVITY * game_framework.frame_time  # 중력 적용
 
     @staticmethod
     def draw(cube):
@@ -74,7 +78,7 @@ class Cube:
         self.image = load_image('cube.png') # 이미지 크기 50*50 고정
         self.is_jumping = False
         self.jump_power = INIT_JUMP_POWER  # 점프 가속도
-        self.start_jump_y = self.y  # 점프 시작 위치
+        self.start_jump_y = self.y  #초기 점프 시작 위치
         self.state_machine = StateMachine(self)
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
@@ -88,12 +92,12 @@ class Cube:
         self.state_machine.update()
         # 점프 중일 때의 동작 처리
         if self.is_jumping:
-            self.y += self.jump_power * game_framework.frame_time
             self.jump_power -= GRAVITY * game_framework.frame_time # 중력 적용
-            if self.y <= self.start_jump_y:  # 지면에 도달했을 때
-                self.y = self.start_jump_y
+            self.y += self.jump_power * game_framework.frame_time
+            if self.y <= GROUND + 25:  # 지면에 도달했을 때
+                self.y = GROUND + 25
+                self.jump_power = INIT_JUMP_POWER  # 점프 가속도 초기화
                 self.is_jumping = False
-                self.jump_power = INIT_JUMP_POWER  # 점프 속도 초기화
 
     def handle_event(self, event):
         self.state_machine.add_event(('INPUT', event))
@@ -114,7 +118,22 @@ class Cube:
 
     def handle_collision(self, group, other):
         if group == 'cube:block':
-            #if self.y + 25 == other.y - other.size/2 and (other.x - other.size/2 < self.x + 25 or self.x - 25 < other.x + other.size/2):
-            self.jump_power = 0
-            pass
+            # 큐브가 블럭 아래를 때림
+           if other.y - other.size/2 + 25 > self.y + 25 > other.y - other.size/2 and (self.x + 25 > other.x - other.size/2 or self.x - 25 < other.x + other.size/2):
+               print('down')
+               self.y = other.y - other.size/2 - 25
+               self.jump_power = 0
+
+            # 큐브가 블럭 위에 있음
+           elif other.y + other.size/2 - 5 < self.y - 25 < other.y + other.size/2 and (self.x + 25 > other.x - other.size/2 or self.x - 25 < other.x + other.size/2):
+               print('up')
+               self.y = other.y + other.size/2 + 25
+               self.start_jump_y = other.y + other.size/2 + 25
+               self.is_jumping = False
+               self.jump_power = INIT_JUMP_POWER
+
+            # 큐브가 블럭 왼쪽에 부딪힘
+
+            # 큐브가 블럭 오른쪽에 부딪힘
+
         pass

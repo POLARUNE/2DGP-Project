@@ -22,6 +22,5 @@ class Block:
         return self.x - self.size / 2, self.y - self.size / 2, self.x + self.size / 2, self.y + self.size / 2
 
     def handle_collision(self, group, other):
-        if group == 'cube:block':
-            pass
+        # print(f'block: {self.x}, {self.y}')
         pass
