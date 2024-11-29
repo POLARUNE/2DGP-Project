@@ -35,16 +35,16 @@ def init():
     blocks = [ Block(275,75), Block(475, 125), Block(725, 175), Block(925, 150) ]
     game_world.add_objects(blocks, 1)
 
-    spikes = [ Spike(675,25,"up") ]
+    spikes = [ Spike(675,25,"right"), Spike(675, 75, "up"), Spike(675, 125, "down"), Spike(675, 175, "left") ]
     game_world.add_objects(spikes, 1)
 
-    yellow_jump_rings =[ Yellow_Jump_Ring(475, 75) ]
+    yellow_jump_rings =[ Yellow_Jump_Ring(825, 75) ]
     game_world.add_objects(yellow_jump_rings, 1)
 
-    pink_jump_rings = [ Pink_Jump_Ring(675,75) ]
+    pink_jump_rings = [ Pink_Jump_Ring(825,75) ]
     game_world.add_objects(pink_jump_rings, 1)
 
-    red_jump_rings = [ Red_Jump_Ring(675, 175) ]
+    red_jump_rings = [ Red_Jump_Ring(825, 175) ]
     game_world.add_objects(red_jump_rings, 1)
 
     blue_jump_rings = [ Blue_Jump_Ring(475, 175) ]
@@ -65,9 +65,12 @@ def init():
 
     # 충돌 정보를 등록
     game_world.add_collision_pair('cube:block', cube, None)
-
     for block in blocks:
         game_world.add_collision_pair('cube:block', None, block)
+
+    game_world.add_collision_pair('cube:spike', cube, None)
+    for spike in spikes:
+        game_world.add_collision_pair('cube:spike', None, spike)
 
 
 
