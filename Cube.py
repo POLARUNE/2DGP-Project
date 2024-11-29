@@ -79,6 +79,7 @@ class Cube:
         self.is_jumping = False
         self.jump_power = INIT_JUMP_POWER  # 점프 가속도
         self.start_jump_y = self.y  #초기 점프 시작 위치
+        self.on_block = False
         self.state_machine = StateMachine(self)
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
@@ -90,14 +91,19 @@ class Cube:
 
     def update(self):
         self.state_machine.update()
+        self.on_block = False
         # 점프 중일 때의 동작 처리
         if self.is_jumping:
             self.jump_power -= GRAVITY * game_framework.frame_time # 중력 적용
             self.y += self.jump_power * game_framework.frame_time
             if self.y <= GROUND + 25:  # 지면에 도달했을 때
                 self.y = GROUND + 25
+                self.start_jump_y = self.y
                 self.jump_power = INIT_JUMP_POWER  # 점프 가속도 초기화
                 self.is_jumping = False
+        elif not self.is_jumping and self.y > GROUND + 25 and not self.on_block: # 지면에 도달하지 않았을 때
+                self.is_jumping = True
+                self.jump_power = 0
 
     def handle_event(self, event):
         self.state_machine.add_event(('INPUT', event))
@@ -118,22 +124,35 @@ class Cube:
 
     def handle_collision(self, group, other):
         if group == 'cube:block':
-            # 큐브가 블럭 아래를 때림
-           if other.y - other.size/2 + 25 > self.y + 25 > other.y - other.size/2 and (self.x + 25 > other.x - other.size/2 or self.x - 25 < other.x + other.size/2):
-               print('down')
-               self.y = other.y - other.size/2 - 25
-               self.jump_power = 0
+            # 큐브가 블록 아래를 때림
+            if (    other.y - other.size / 2 + 25 > self.y + 25 > other.y - other.size / 2
+                    and self.x + 25 > other.x - other.size / 2
+                    and self.x - 25 < other.x + other.size / 2
+            ):
+                print('down')
+                self.y = other.y - other.size / 2 - 25
+                self.jump_power = 0
 
-            # 큐브가 블럭 위에 있음
-           elif other.y + other.size/2 - 5 < self.y - 25 < other.y + other.size/2 and (self.x + 25 > other.x - other.size/2 or self.x - 25 < other.x + other.size/2):
-               print('up')
-               self.y = other.y + other.size/2 + 25
-               self.start_jump_y = other.y + other.size/2 + 25
-               self.is_jumping = False
-               self.jump_power = INIT_JUMP_POWER
+            # 큐브가 블록 위에 있음
+            elif (  other.y + other.size / 2 - 5 <= self.y - 25 < other.y + other.size / 2 + 5 # y 오차값 +-5
+                    and self.x + 25 > other.x - other.size / 2
+                    and self.x - 25 < other.x + other.size / 2
+            ):
+                print('standing on block')
+                self.y = other.y + other.size / 2 + 25
+                self.on_block = True
+                self.is_jumping = False
+                self.start_jump_y = self.y
+                self.jump_power = INIT_JUMP_POWER
 
-            # 큐브가 블럭 왼쪽에 부딪힘
+            # 큐브가 블록 왼쪽에 부딪힘
+            if self.x + 25 > other.x - other.size / 2 > self.x + 20: # x 오차값
+                print('left collision')
+                self.x = other.x - other.size / 2 - 25
 
-            # 큐브가 블럭 오른쪽에 부딪힘
+                # 큐브가 블록 오른쪽에 부딪힘
+            if self.x - 25 < other.x + other.size / 2 < self.x: # x 오차값
+                print('right collision')
+                self.x = other.x + other.size / 2 + 25
 
-        pass
+
