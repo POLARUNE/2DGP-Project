@@ -5,8 +5,8 @@ import game_world
 from bg import Bg
 from block import Block
 from Cube import Cube
-from jump_pad import Yellow_Jump_Pad, Pink_Jump_Pad, Red_Jump_Pad, Blue_Jump_Pad
-from jump_ring import Yellow_Jump_Ring, Pink_Jump_Ring, Red_Jump_Ring, Blue_Jump_Ring
+from jump_pad import Jump_Pad
+from jump_ring import Jump_Ring
 from spike import Spike
 
 
@@ -22,45 +22,27 @@ def handle_events():
 
 
 def init():
-    global cube, blocks, spikes
+    global cube, blocks, spikes, jump_pads
     global yellow_jump_rings, pink_jump_rings, red_jump_rings, blue_jump_rings
-    global yellow_jump_pads, pink_jump_pads, red_jump_pads, blue_jump_pads
 
     bg = Bg()
-    game_world.add_object(bg, 0)
+    # game_world.add_object(bg, 0)
 
-    cube = Cube()
+    # 맵 넓이 (24, 8), 큐브 점프 (3, 3)
+    cube = Cube(2, 3)
     game_world.add_object(cube, 2)
 
-    blocks = [ Block(275,75), Block(475, 125), Block(725, 175), Block(925, 150) ]
+    blocks = [ Block(2,2), Block(5, 2), Block(8, 3), Block(11, 5) ]
     game_world.add_objects(blocks, 1)
 
-    spikes = [ Spike(675,25,"right"), Spike(675, 75, "up"), Spike(675, 125, "down"), Spike(675, 175, "left") ]
+    spikes = [ Spike(3,2,"right"), Spike(4, 1, "up"), Spike(8, 2, "down"), Spike(4, 2, "left") ]
     game_world.add_objects(spikes, 1)
 
-    yellow_jump_rings =[ Yellow_Jump_Ring(825, 75) ]
-    game_world.add_objects(yellow_jump_rings, 1)
+    jump_rings =[ Jump_Ring(9, 1, "yellow"), Jump_Ring(12,2,"pink"), Jump_Ring(15,3,"red"),Jump_Ring(18,4, "blue") ]
+    game_world.add_objects(jump_rings, 1)
 
-    pink_jump_rings = [ Pink_Jump_Ring(825,75) ]
-    game_world.add_objects(pink_jump_rings, 1)
-
-    red_jump_rings = [ Red_Jump_Ring(825, 175) ]
-    game_world.add_objects(red_jump_rings, 1)
-
-    blue_jump_rings = [ Blue_Jump_Ring(475, 175) ]
-    game_world.add_objects(blue_jump_rings, 1)
-
-    yellow_jump_pads = [ Yellow_Jump_Pad(875,5) ]
-    game_world.add_objects(yellow_jump_pads, 1)
-
-    pink_jump_pads = [ Pink_Jump_Pad(925,5) ]
-    game_world.add_objects(pink_jump_pads, 1)
-
-    red_jump_pads = [ Red_Jump_Pad(975,5) ]
-    game_world.add_objects(red_jump_pads, 1)
-
-    blue_jump_pads = [ Blue_Jump_Pad(1025,5) ]
-    game_world.add_objects(blue_jump_pads, 1)
+    jump_pads = [ Jump_Pad(14,1, "yellow"), Jump_Pad(16,1,"pink"), Jump_Pad(18,1,"red"), Jump_Pad(20,1,"blue") ]
+    game_world.add_objects(jump_pads, 1)
 
 
     # 충돌 정보를 등록
@@ -71,6 +53,14 @@ def init():
     game_world.add_collision_pair('cube:spike', cube, None)
     for spike in spikes:
         game_world.add_collision_pair('cube:spike', None, spike)
+
+    game_world.add_collision_pair('cube:ring', cube, None)
+    for jump_ring in jump_rings:
+        game_world.add_collision_pair('cube:ring', None, jump_ring)
+
+    game_world.add_collision_pair('cube:pad', cube, None)
+    for jump_pad in jump_pads:
+        game_world.add_collision_pair('cube:pad', None, jump_pad)
 
 
 

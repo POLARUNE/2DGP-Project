@@ -3,8 +3,8 @@ from pico2d import *
 class Spike:
     def __init__(self, x, y, direction):  # 방향 설정 ("up", "down", "left", "right")
         self.image = load_image('spike1.png')
-        self.x = x
-        self.y = y
+        self.x = x * 50 - 25 # 1부터 시작
+        self.y = y * 50 - 25 # 1부터 시작
         self.size = 50
         self.direction = direction  # 가시의 방향 설정
 

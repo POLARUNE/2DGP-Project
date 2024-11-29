@@ -5,8 +5,8 @@ class Block:
     def __init__(self, x, y):
         self.image = load_image('block1.png')
         # x와 y 좌표는 블록 정중앙
-        self.x = x
-        self.y = y
+        self.x = x * 50 - 25 # 1부터 시작
+        self.y = y * 50 - 25 # 1부터 시작
         self.size = 50  # 가로 세로 길이
 
     def draw(self):

@@ -1,6 +1,7 @@
 from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT
 
 
+
 def start_event(e):
     return e[0] == 'START'
 

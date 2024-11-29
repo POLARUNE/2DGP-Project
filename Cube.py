@@ -1,7 +1,6 @@
 from pico2d import load_image, draw_rectangle
 import time
 import game_framework
-import game_world
 from settings import canvas_w
 from state_machine import *
 
@@ -71,8 +70,10 @@ class Run:
         cube.image.draw(cube.x, cube.y)
 
 class Cube:
-    def __init__(self):
-        self.x, self.y = 100, 25 # 큐브 x,y 좌표는 큐브 정중앙
+    def __init__(self, x, y):
+        # 큐브 x,y 좌표는 큐브 정중앙
+        self.x = x * 50 - 25  # 1부터 시작
+        self.y = y * 50 - 25  # 1부터 시작
         self.checkpoint_x, self.checkpoint_y = self.x, self.y # 죽으면 다시 부활할 위치
         self.dir = 1 # 큐브 방향
         self.image = load_image('cube.png') # 이미지 크기 50*50 고정
@@ -90,6 +91,7 @@ class Cube:
         )
         self.visible = True  # 큐브가 화면에 표시되는 상태
         self.respawn_timer = 0  # 부활 대기 시간 초기화
+        self.is_space_pressed = False  # 스페이스바 눌림 상태
 
     def update(self):
         if not self.visible and time.time() >= self.respawn_timer:  # 부활 타이머가 끝난 경우
@@ -115,6 +117,11 @@ class Cube:
                 self.jump_power = 0
 
     def handle_event(self, event):
+        if event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            self.is_space_pressed = True  # 스페이스바 눌림 상태
+        elif event.type == SDL_KEYUP and event.key == SDLK_SPACE:
+            self.is_space_pressed = False  # 스페이스바 해제 상태
+
         self.state_machine.add_event(('INPUT', event))
 
     def draw(self):
@@ -147,7 +154,7 @@ class Cube:
                     and self.x + 25 > other.x - other.size / 2
                     and self.x - 25 < other.x + other.size / 2
             ):
-                print('standing on block')
+                # print('standing on block')
                 self.y = other.y + other.size / 2 + 25
                 self.on_block = True
                 self.is_jumping = False
@@ -157,18 +164,27 @@ class Cube:
             # 큐브가 블록 왼쪽에 부딪힘
             if (self.x + 25 > other.x - other.size / 2 > self.x + 20
                     and other.y - other.size / 2 - 24 < self.y < other.y + other.size / 2 + 24):
-                print('left collision')
+                # print('left collision')
                 self.x = other.x - other.size / 2 - 25
 
                 # 큐브가 블록 오른쪽에 부딪힘
             if (self.x - 25 < other.x + other.size / 2 < self.x - 20
                     and other.y - other.size / 2 - 24 < self.y < other.y + other.size / 2 + 24):
-                print('right collision')
+                # print('right collision')
                 self.x = other.x + other.size / 2 + 25
 
         if group == 'cube:spike':
             if self.visible:  # 큐브가 보일 때만 충돌 처리
                 self.visible = False  # 큐브를 화면에서 숨김
                 self.respawn_timer = time.time() + 0.5  # 0.5초 후 부활
+
+        if group == 'cube:pad':
+            self.is_jumping = True
+            self.jump_power = other.jump_power  # 점프 시작 가속도를 초기화
+
+        if group == 'cube:ring':
+            if self.is_space_pressed:  # 스페이스바가 눌렸는지 확인
+                self.is_jumping = True
+                self.jump_power = other.jump_power  # 점프 가속도를 초기화
 
 
