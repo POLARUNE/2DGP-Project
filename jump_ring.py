@@ -29,7 +29,7 @@ class Jump_Ring:
 
     def get_bb(self):
         # 4개의 값을 리턴하는데, 사실은 1개의 튜플
-        return self.x - self.size / 2, self.y - self.size / 2, self.x + self.size / 2, self.y + self.size / 2
+        return self.x - self.size / 2 + 1, self.y - self.size / 2 + 1, self.x + self.size / 2 - 1, self.y + self.size / 2 - 1
 
     def handle_collision(self, group, other):
         pass
