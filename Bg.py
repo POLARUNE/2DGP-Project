@@ -3,7 +3,7 @@ from settings import canvas_w, canvas_h
 
 class Bg:
     def __init__(self):
-        self.image = load_image('bg1.png')
+        self.image = load_image('Stage1BG.png')
 
     def draw(self):
         self.image.draw_to_origin(0, 0, canvas_w, canvas_h)

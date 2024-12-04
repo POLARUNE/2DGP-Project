@@ -150,7 +150,7 @@ class Cube:
                 self.jump_power = 0
 
             # 큐브가 블록 위에 있음
-            if (  other.y + other.size / 2 - 5 <= self.y - 25 < other.y + other.size / 2 + 5 # y 오차값 +-5
+            if (  other.y + other.size / 2 - 15 <= self.y - 25 < other.y + other.size / 2 + 15 # y 오차값 +-15
                     and self.x + 25 > other.x - other.size / 2
                     and self.x - 25 < other.x + other.size / 2
             ):
@@ -162,13 +162,13 @@ class Cube:
                 self.jump_power = INIT_JUMP_POWER
 
             # 큐브가 블록 왼쪽에 부딪힘
-            if (self.x + 25 > other.x - other.size / 2 > self.x + 20
+            if (self.x + 25 > other.x - other.size / 2 > self.x + 10
                     and other.y - other.size / 2 - 24 < self.y < other.y + other.size / 2 + 24):
                 # print('left collision')
                 self.x = other.x - other.size / 2 - 25
 
                 # 큐브가 블록 오른쪽에 부딪힘
-            if (self.x - 25 < other.x + other.size / 2 < self.x - 20
+            if (self.x - 25 < other.x + other.size / 2 < self.x - 10
                     and other.y - other.size / 2 - 24 < self.y < other.y + other.size / 2 + 24):
                 # print('right collision')
                 self.x = other.x + other.size / 2 + 25
