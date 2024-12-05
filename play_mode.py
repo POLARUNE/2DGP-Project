@@ -2,13 +2,14 @@ from pico2d import *
 
 import game_framework
 import game_world
+import title_mode
 from bg import Bg
 from block import Block
 from Cube import Cube
 from jump_pad import Jump_Pad
 from jump_ring import Jump_Ring
 from spike import Spike
-
+from checkpoint import Checkpoint
 
 def handle_events():
     events = get_events()
@@ -16,13 +17,13 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            game_framework.change_mode(title_mode)
         else:
             cube.handle_event(event)
 
 
 def init():
-    global cube, blocks, spikes, jump_pads
+    global cube, blocks, spikes, jump_pads, checkpoint
     global yellow_jump_rings, pink_jump_rings, red_jump_rings, blue_jump_rings
 
     bg = Bg()
@@ -31,6 +32,9 @@ def init():
     # 맵 넓이 (24, 16), 큐브 점프 (3, 3)
     cube = Cube(16, 6)
     game_world.add_object(cube, 2)
+
+    checkpoint = Checkpoint(1, 14)
+    game_world.add_object(checkpoint, 1)
 
     blocks = [Block(23,1),Block(23,2),Block(23,3),Block(20,5),Block(1,4), Block(16,5),Block(12,5),Block(8,5),
               Block(5,7), Block(3,6), Block(3,11), Block(10,5), Block(14,5), Block(18,5),Block(14,6),Block(10,6),
