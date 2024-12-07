@@ -1,0 +1,17 @@
+# pyinstaller 로 exe 를 build 하기 위한 설정
+
+# 1. 메인 파일 이름을 지정하세요.
+main_file = 'project_main.py'
+
+# 2. 데이타 파일들을 지정하세요.
+data_files = [ 'block1.png', 'blue_jump_pad.png', 'blue_jump_ring.png', 'checkpointOFF.png', 'checkpointON.png',
+    'coin.png', 'complete_level.png', 'complete_sound.wav', 'cube.png', 'eat_coin.wav', 'fire_in_the_hole.wav',
+    'pink_jump_pad.png', 'pink_jump_ring.png', 'red_jump_pad.png', 'red_jump_ring.png', 'spike1.png', 'Stage1BG.png',
+    'title.png', 'title_to_play.wav', 'titlebgm.mp3', 'TMM43 - Ultimate Destruction.mp3', 'yellow_jump_pad.png',
+    'yellow_jump_ring.png'
+]
+
+# 3. 데이타가 들어있는 폴더들을 지정하세요.
+data_folders = [
+]
+
