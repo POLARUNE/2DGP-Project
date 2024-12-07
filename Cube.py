@@ -187,4 +187,8 @@ class Cube:
                 self.is_jumping = True
                 self.jump_power = other.jump_power  # 점프 가속도를 초기화
 
+        if group == 'cube:checkpoint':
+            self.checkpoint_x = other.x
+            self.checkpoint_y = other.y
+
 

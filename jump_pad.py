@@ -5,13 +5,13 @@ class Jump_Pad:
     def __init__(self, x, y, color):
         if color == "yellow":
             self.image = load_image('yellow_jump_pad.png')
-            self.jump_power = 800 # 2칸 상승
+            self.jump_power = 800 # 3칸 상승
         elif color == "red":
             self.image = load_image('red_jump_pad.png')
-            self.jump_power = 1000 # 3칸 상승
+            self.jump_power = 1000 # 4칸 상승
         elif color == "pink":
             self.image = load_image('pink_jump_pad.png')
-            self.jump_power = 600 # 4칸 상승
+            self.jump_power = 600 # 2칸 상승
         elif color == "blue":
             self.image = load_image('blue_jump_pad.png')
             self.jump_power = 0

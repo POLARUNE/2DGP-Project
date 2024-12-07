@@ -2,7 +2,7 @@ from pico2d import *
 
 class Checkpoint:
     def __init__(self, x, y):
-        self.image = load_image('checkpoint.png')
+        self.image = load_image('checkpointOFF.png')
         self.x = x * 50 - 25 # 1부터 시작
         self.y = y * 50 - 25 # 1부터 시작
         self.x_size = 25  # 가로 길이
@@ -20,4 +20,5 @@ class Checkpoint:
         return self.x - self.x_size / 2, self.y - self.y_size / 2, self.x + self.x_size / 2, self.y + self.y_size / 2
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'cube:checkpoint':
+            self.image = load_image('checkpointON.png')

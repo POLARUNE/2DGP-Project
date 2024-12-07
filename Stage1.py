@@ -1,8 +1,4 @@
-from pico2d import *
-
-import game_framework
 import game_world
-import stage_sel_mode
 from Cube import Cube
 from checkpoint import Checkpoint
 from block import Block
@@ -10,26 +6,8 @@ from jump_pad import Jump_Pad
 from jump_ring import Jump_Ring
 from spike import Spike
 
-from stage1 import load_stage1
 
-
-def handle_events():
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_mode(stage_sel_mode)
-        else:
-            cube.handle_event(event)
-
-
-def init():
-    global cube, blocks, spikes, jump_pads, jump_rings, checkpoint
-
-    #cube, blocks, spikes, jump_pads, jump_rings, checkpoint = load_stage1()
-
-
+def load_stage1():
     #cube = Cube(3, 1)
     cube = Cube(16,6)
     game_world.add_object(cube, 2)
@@ -64,40 +42,4 @@ def init():
     jump_pads = [Jump_Pad(20, 1, "red"), Jump_Pad(1, 5, "red"), Jump_Pad(8, 6, "pink")]
     game_world.add_objects(jump_pads, 1)
 
-    #충돌 정보 등록
-    game_world.add_collision_pair('cube:block', cube, None)
-    for block in blocks:
-        game_world.add_collision_pair('cube:block', None, block)
-
-    game_world.add_collision_pair('cube:spike', cube, None)
-    for spike in spikes:
-        game_world.add_collision_pair('cube:spike', None, spike)
-
-    game_world.add_collision_pair('cube:ring', cube, None)
-    for jump_ring in jump_rings:
-        game_world.add_collision_pair('cube:ring', None, jump_ring)
-
-    game_world.add_collision_pair('cube:pad', cube, None)
-    for jump_pad in jump_pads:
-        game_world.add_collision_pair('cube:pad', None, jump_pad)
-
-    game_world.add_collision_pair('cube:checkpoint', cube, None)
-    game_world.add_collision_pair('cube:checkpoint', None, checkpoint)
-
-
-def update():
-    game_world.update()
-    game_world.handle_collisions()
-    # delay(0.1)
-
-def draw():
-    clear_canvas()
-    game_world.render()
-    update_canvas()
-
-def finish():
-    game_world.clear()
-
-
-def pause(): pass
-def resume(): pass
+    return cube, blocks, spikes, jump_rings, jump_pads, checkpoint
