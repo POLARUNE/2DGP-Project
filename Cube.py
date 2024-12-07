@@ -1,4 +1,4 @@
-from pico2d import load_image, draw_rectangle, load_wav
+from pico2d import *
 import time
 import game_framework
 from settings import canvas_w
@@ -97,8 +97,6 @@ class Cube:
             self.cube_break_sound = load_wav('fire_in_the_hole.wav')
             self.cube_break_sound.set_volume(32)
 
-
-
     def update(self):
         if not self.visible and time.time() >= self.respawn_timer:  # 부활 타이머가 끝난 경우
             self.visible = True
@@ -133,12 +131,12 @@ class Cube:
     def draw(self):
         if self.visible:  # 큐브가 보일 때만 그리기
             self.state_machine.draw()
-            draw_rectangle(*self.get_bb())
+            # draw_rectangle(*self.get_bb())
 
     def jump(self):
         if not self.is_jumping:  # 점프 중이 아닐 때만 실행
             self.is_jumping = True
-            print('JUMP')
+            # print('JUMP')
 
     def get_bb(self):
         # 4개의 값을 리턴하는데, 사실은 1개의 튜플
@@ -151,7 +149,7 @@ class Cube:
                     and self.x + 25 > other.x - other.size / 2
                     and self.x - 25 < other.x + other.size / 2
             ):
-                print('down')
+                # print('down')
                 self.y = other.y - other.size / 2 - 25
                 self.jump_power = 0
 
@@ -198,4 +196,5 @@ class Cube:
             self.checkpoint_x = other.x
             self.checkpoint_y = other.y
 
-
+        if group == 'cube:coin':
+            pass

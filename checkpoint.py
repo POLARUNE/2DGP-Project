@@ -10,7 +10,7 @@ class Checkpoint:
 
     def draw(self):
         self.image.draw(self.x,self.y,self.x_size,self.y_size)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass

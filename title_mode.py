@@ -3,7 +3,6 @@ from sdl2 import SDL_QUIT, SDLK_ESCAPE, SDL_KEYDOWN, SDLK_SPACE
 
 import game_framework
 import play_mode
-import stage_sel_mode
 from settings import canvas_w, canvas_h
 
 

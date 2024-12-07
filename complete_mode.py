@@ -2,24 +2,23 @@ from pico2d import *
 from sdl2 import SDL_QUIT, SDLK_ESCAPE, SDL_KEYDOWN, SDLK_SPACE
 
 import game_framework
-import play_mode
-import stage_sel_mode
+import game_world
 import title_mode
-from settings import canvas_w, canvas_h
+from complete_pannel import Pannel
 
 
 def init():
-    global image, bgm, clickbgm
-    image = load_image('title.png')
-    click_bgm = None
-    bgm = load_music('titlebgm.mp3')
-    bgm.set_volume(32)
-    bgm.repeat_play()
+    global pannel, complete_sound, cube
+    pannel = Pannel()
+    #1초 후에 패널이 위에서 내려옴
+    game_world.add_object(pannel, 3)
+    complete_sound = load_wav('complete_sound.wav')
+    complete_sound.set_volume(32)
+    complete_sound.play()
 
 
 def finish():
-    global image
-    del image
+    game_world.clear()
 
 def handle_events():
     events = get_events()
@@ -28,16 +27,15 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             game_framework.change_mode(title_mode)
 
+def update():
+    game_world.update()
 
 def draw():
-    clear_canvas()
-    image.draw(canvas_w / 2, canvas_h / 2)
+    game_world.render()
     update_canvas()
-
-def update(): pass
 
 def pause(): pass
 def resume(): pass

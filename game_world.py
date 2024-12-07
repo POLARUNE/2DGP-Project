@@ -1,6 +1,6 @@
 # world[0] : 백그라운드 객체들
 # world[1] : foreground 객체들
-world = [[],[],[]]
+world = [[],[],[],[]]
 collision_pairs = {} # 빈 딕셔너리 { 'key' : [ [A list][B list] ] }
 
 def add_collision_pair(group, a, b):

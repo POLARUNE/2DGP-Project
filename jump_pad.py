@@ -22,7 +22,7 @@ class Jump_Pad:
 
     def draw(self):
         self.image.draw(self.x, self.y, 50, 10)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass

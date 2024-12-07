@@ -1,9 +1,8 @@
-from pico2d import load_image, draw_rectangle, load_wav
+from pico2d import *
 
+import complete_mode
 import game_framework
 import game_world
-import play_mode
-import title_mode
 
 
 class Coin:
@@ -29,8 +28,8 @@ class Coin:
             self.image.opacify(self.alpha)
             self.image.draw(self.x, self.y, self.size, self.size)
             # 충돌 영역은 'normal' 상태에서만 표시
-            if self.state == 'normal':
-                draw_rectangle(*self.get_bb())
+            # if self.state == 'normal':
+                #draw_rectangle(*self.get_bb())
 
     def update(self):
         if self.state == 'disappearing':
@@ -45,8 +44,8 @@ class Coin:
                 # 애니메이션이 끝나면 상태를 'removed'로 변경
                 self.state = 'removed'
                 game_world.remove_object(self)
-                # 타이틀 화면 이동
-                game_framework.change_mode(title_mode)
+                #화면 이동
+                game_framework.push_mode(complete_mode)
 
     def get_bb(self):
         return self.x - self.size / 2, self.y - self.size / 2, self.x + self.size / 2, self.y + self.size / 2
@@ -56,3 +55,6 @@ class Coin:
             self.state = 'disappearing'
             self.time = 0  # 타이머 초기화
             Coin.eat_coin_sound.play()  # 코인 먹는 소리 재생
+
+            # 큐브 충돌 그룹 제거
+            game_world.remove_collision_object(other)

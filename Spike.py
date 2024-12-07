@@ -17,7 +17,7 @@ class Spike:
             self.image.composite_draw(3.141592/2, 'h', self.x, self.y, self.size, self.size)  # 왼쪽 방향 (90도 회전)
         elif self.direction == "right":
             self.image.composite_draw(-(3.141592/2), 'h', self.x, self.y, self.size, self.size)  # 오른쪽 방향 (-90도 회전)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass

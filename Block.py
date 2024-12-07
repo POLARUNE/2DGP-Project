@@ -12,7 +12,7 @@ class Block:
     def draw(self):
         self.image.draw(self.x, self.y, self.size, self.size)
         # 충돌 영역 그리기
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
