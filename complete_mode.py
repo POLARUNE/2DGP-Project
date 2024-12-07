@@ -4,6 +4,7 @@ from sdl2 import SDL_QUIT, SDLK_ESCAPE, SDL_KEYDOWN, SDLK_SPACE
 import game_framework
 import play_mode
 import stage_sel_mode
+import title_mode
 from settings import canvas_w, canvas_h
 
 
@@ -28,14 +29,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            bgm.stop()
-            #start sound 필요
-            click_bgm = load_wav('title_to_play.wav')
-            click_bgm.set_volume(32)
-            click_bgm.play()
-            delay(1.5)
-            #game_framework.change_mode(stage_sel_mode)
-            game_framework.change_mode(play_mode)
+            game_framework.change_mode(title_mode)
 
 
 def draw():

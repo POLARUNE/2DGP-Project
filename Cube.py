@@ -1,4 +1,4 @@
-from pico2d import load_image, draw_rectangle
+from pico2d import load_image, draw_rectangle, load_wav
 import time
 import game_framework
 from settings import canvas_w
@@ -11,7 +11,7 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-# 점프 가속도와 높이 조절 // 가속 운동일 때는 오일러 공식 // v = at
+# 점프 가속도와 높이 조절
 INIT_JUMP_POWER = 800
 GRAVITY = 3000
 GROUND = 0 # 땅 Y 좌표
@@ -70,6 +70,7 @@ class Run:
         cube.image.draw(cube.x, cube.y)
 
 class Cube:
+    cube_break_sound = None
     def __init__(self, x, y):
         # 큐브 x,y 좌표는 큐브 정중앙
         self.x = x * 50 - 25  # 1부터 시작
@@ -92,6 +93,11 @@ class Cube:
         self.visible = True  # 큐브가 화면에 표시되는 상태
         self.respawn_timer = 0  # 부활 대기 시간 초기화
         self.is_space_pressed = False  # 스페이스바 눌림 상태
+        if not Cube.cube_break_sound:
+            self.cube_break_sound = load_wav('fire_in_the_hole.wav')
+            self.cube_break_sound.set_volume(32)
+
+
 
     def update(self):
         if not self.visible and time.time() >= self.respawn_timer:  # 부활 타이머가 끝난 경우
@@ -167,7 +173,7 @@ class Cube:
                 # print('left collision')
                 self.x = other.x - other.size / 2 - 25
 
-                # 큐브가 블록 오른쪽에 부딪힘
+            # 큐브가 블록 오른쪽에 부딪힘
             if (self.x - 25 < other.x + other.size / 2 < self.x - 10
                     and other.y - other.size / 2 - 24 < self.y < other.y + other.size / 2 + 24):
                 # print('right collision')
@@ -176,6 +182,7 @@ class Cube:
         if group == 'cube:spike':
             if self.visible:  # 큐브가 보일 때만 충돌 처리
                 self.visible = False  # 큐브를 화면에서 숨김
+                self.cube_break_sound.play()
                 self.respawn_timer = time.time() + 0.5  # 0.5초 후 부활
 
         if group == 'cube:pad':

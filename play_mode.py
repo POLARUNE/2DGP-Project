@@ -3,14 +3,17 @@ from pico2d import *
 import game_framework
 import game_world
 import stage_sel_mode
+import title_mode
+from Bg import Bg
 from Cube import Cube
 from checkpoint import Checkpoint
 from block import Block
+from coin import Coin
 from jump_pad import Jump_Pad
 from jump_ring import Jump_Ring
 from spike import Spike
 
-from stage1 import load_stage1
+# from stage1 import load_stage1
 
 
 def handle_events():
@@ -19,7 +22,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_mode(stage_sel_mode)
+            game_framework.change_mode(title_mode)
         else:
             cube.handle_event(event)
 
@@ -30,12 +33,19 @@ def init():
     #cube, blocks, spikes, jump_pads, jump_rings, checkpoint = load_stage1()
 
 
-    #cube = Cube(3, 1)
-    cube = Cube(16,6)
+    bg = Bg()
+    game_world.add_object(bg, 0)
+
+    cube = Cube(3, 1)
+    #cube = Cube(16,6)
     game_world.add_object(cube, 2)
 
-    checkpoint = Checkpoint(12, 6)
+    checkpoint = Checkpoint(16, 6)
     game_world.add_object(checkpoint, 1)
+
+    # coin = Coin(1,14)
+    coin = Coin(5, 2)
+    game_world.add_object(coin,1)
 
     blocks = [
         Block(23, 1), Block(23, 2), Block(23, 3), Block(20, 5), Block(1, 4),
@@ -84,6 +94,8 @@ def init():
     game_world.add_collision_pair('cube:checkpoint', cube, None)
     game_world.add_collision_pair('cube:checkpoint', None, checkpoint)
 
+    game_world.add_collision_pair('cube:coin',cube, None)
+    game_world.add_collision_pair('cube:coin',None,coin)
 
 def update():
     game_world.update()
